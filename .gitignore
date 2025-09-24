@@ -1,0 +1,44 @@
+# Arquivo .gitignore para projeto FastAPI
+
+# Ambiente virtual
+env/
+.venv/
+venv/
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.*
+!.env.example
+
+# Cache do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE/Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Arquivos de desenvolvimento
+*.log
+*.sqlite
+*.db
+
+# Arquivos gerados
+dist/
+build/
+*.egg-info/
+
+# Testes e cobertura
+.coverage
+htmlcov/
+.pytest_cache/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
