@@ -1,52 +1,38 @@
 import os
 
 import pandas as pd
-
-from datetime import datetime
 from joblib import load
-from sqlalchemy import text
-from database import database
-from database import engine
-from models.cliente_model import Cliente
+from datetime import datetime
+
 from .cliente_service import get_client_by_id
+from config.column_mapping import COLUMN_MAPPING_DICT
+from db.database import database
+from models.predict_model import PredictResponse
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "package", "pipeline_churn.joblib")
 
-# carregar modelo .pkl
+# Carregar modelo uma vez
 model = load(MODEL_PATH)
 
-async def predict_client_by_id(customer_id: int):
-    # Pegar cliente do banco
+async def predict_client_by_id(customer_id: int) -> PredictResponse:
+    """
+    Faz a predição de churn para um cliente pelo ID.
+
+    Retorna um modelo PredictResponse com:
+    - customer_id
+    - churn_predito (bool)
+    - probabilidade (float entre 0 e 1)
+    """
+    # Buscar cliente no banco
     cliente_data = await get_client_by_id(customer_id)
+    
     if not cliente_data:
-        return {"error": "Cliente não encontrado", "customer_id": customer_id}
+        return None 
 
-    # Converter para DataFrame
+    # Converter dados para DataFrame
     df = pd.DataFrame([dict(cliente_data)])
-
-    # Renomear colunas para bater com o modelo treinado
-    df.rename(columns={
-        "gender": "gender",
-        "senior_citizen": "SeniorCitizen",
-        "partner": "Partner",
-        "dependents": "Dependents",
-        "tenure": "tenure",
-        "phone_service": "PhoneService",
-        "multiple_lines": "MultipleLines",
-        "internet_service": "InternetService",
-        "online_security": "OnlineSecurity",
-        "online_backup": "OnlineBackup",
-        "device_protection": "DeviceProtection",
-        "tech_support": "TechSupport",
-        "streaming_tv": "StreamingTV",
-        "streaming_movies": "StreamingMovies",
-        "contract": "Contract",
-        "paperless_billing": "PaperlessBilling",
-        "payment_method": "PaymentMethod",
-        "monthly_charges": "MonthlyCharges",
-        "total_charges": "TotalCharges"
-    }, inplace=True)
+    df.rename(columns=COLUMN_MAPPING_DICT, inplace=True)
 
     # Predição
     prob = float(model.predict_proba(df)[:, 1][0])
@@ -65,4 +51,9 @@ async def predict_client_by_id(customer_id: int):
     }
     await database.execute(query_insert, values)
 
-    return values
+    # Retornar usando Pydantic
+    return PredictResponse(
+        customer_id=customer_id,
+        churn_predito=pred,
+        probabilidade=round(prob, 2)
+    )
