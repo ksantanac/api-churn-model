@@ -40,11 +40,16 @@ async def add_client(cliente: Cliente):
     return customer_id
 
 
-async def get_client(customer_id: str):
+async def get_client_by_id(customer_id: str):
     query = "SELECT * FROM clientes WHERE customer_id = :customer_id"
-    return await database.fetch_one(query, {"customer_id": customer_id})
+    cliente = await database.fetch_one(query, {"customer_id": customer_id})
 
-async def predict_client(cliente: Cliente):
+    if not cliente:
+        return None
+    
+    return cliente
+
+async def add_predict_client(cliente: Cliente):
     # Inserir cliente no banco
     customer_id = await add_client(cliente)
     print("Cliente inserido no banco:")

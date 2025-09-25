@@ -7,7 +7,8 @@ from database import database
 
 from controllers import (
     auth_controller, 
-    cliente_controller
+    cliente_controller,
+    predict_controller
 ) 
 
 app = FastAPI(
@@ -38,6 +39,7 @@ main_router = APIRouter(prefix=API_PREFIX)
 # Incluir os outros roteadores no roteador principal
 main_router.include_router(auth_controller.router, prefix="/auth")
 main_router.include_router(cliente_controller.router)
+main_router.include_router(predict_controller.router)
 
 # Incluir o roteador principal no app
 app.include_router(main_router)
