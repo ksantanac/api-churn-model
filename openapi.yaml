@@ -1,0 +1,501 @@
+openapi: 3.0.3
+info:
+  title: API CHURN MODEL - Autenticação
+  description: Endpoints para gerenciamento de autenticação e usuários
+  version: 1.0.0
+
+# servers:
+#   - url: https://embrapa-fiap.onrender.com/api/v1
+#     description: Servidor Render
+
+
+security:
+  - BearerAuth: []  # Isso força o Swagger UI a mostrar o botão Authorize
+
+paths:
+  # CREATE TOKEN
+  /auth/createToken:
+    post:
+      tags: ["Autenticação"]
+      summary: Gera tokens de acesso e refresh
+      description: Autentica usuário e retorna tokens JWT
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: "usuario_exemplo"
+                password:
+                  type: string
+                  example: "senha_secreta"
+              required: ["username", "password"]
+      responses:
+        200:
+          description: Tokens gerados com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Token"
+        401:
+          description: Credenciais inválidas
+
+  # REFRESH TOKEN
+  /auth/refreshToken:
+    post:
+      tags: ["Autenticação"]
+      summary: Renova access token
+      description: Usa refresh token para gerar novo access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh_token:
+                  type: string
+                  example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              required: ["refresh_token"]
+      responses:
+        200:
+          description: Novo access token gerado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Token"
+        401:
+          description: Refresh token inválido ou expirado
+
+  # CREATE USER
+  /auth/createUser:
+    post:
+      tags: ["Usuários"]
+      summary: Cria novo usuário
+      description: Registra um novo usuário no sistema
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserCreate"
+      responses:
+        201:
+          description: Usuário criado com sucesso
+        400:
+          description: Usuário já existe
+        500:
+          description: Erro interno no servidor
+  
+  # DELETE TOKEN
+  /auth/user/{user_id}:
+    delete:
+      tags: ["Usuários"]
+      summary: Remove usuário
+      description: Deleta um usuário existente (requer autenticação)
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        200:
+          description: Usuário removido com sucesso
+        401:
+          description: Não autorizado
+        404:
+          description: Usuário não encontrado
+
+
+  # CREATE CLIENTE
+  /clientes:
+    post:
+      tags:
+        - "Clientes"
+      summary: "Criar novo cliente"
+      description: "Adiciona um novo cliente ao sistema"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gender:
+                  type: string
+                  example: "Male"
+                senior_citizen:
+                  description: "0 = Não, 1 = Sim"
+                  type: integer
+                  example: 0
+                partner:
+                  type: integer
+                  description: "0 = Não, 1 = Sim"
+                  example: 1
+                dependents:
+                  type: integer
+                  description: "0 = Não, 1 = Sim"
+                  example: 0
+                tenure:
+                  type: integer
+                  example: 12
+                phone_service:
+                  type: integer
+                  description: "0 = Não, 1 = Sim"
+                  example: 1
+                multiple_lines:
+                  type: string
+                  example: "No"
+                internet_service:
+                  type: string
+                  example: "Fiber optic"
+                online_security:
+                  type: string
+                  example: "Yes"
+                online_backup:
+                  type: string
+                  example: "No"
+                device_protection:
+                  type: string
+                  example: "Yes"
+                tech_support:
+                  type: string
+                  example: "No"
+                streaming_tv:
+                  type: string
+                  example: "Yes"
+                streaming_movies:
+                  type: string
+                  example: "No"
+                contract:
+                  type: string
+                  example: "Month-to-month"
+                paperless_billing:
+                  type: integer
+                  description: "0 = Não, 1 = Sim"
+                  example: 1
+                payment_method:
+                  type: string
+                  example: "Credit card"
+                monthly_charges:
+                  type: number
+                  format: float
+                  example: 70.35
+                total_charges:
+                  type: number
+                  format: float
+                  example: 845.50
+      responses:
+        '200':
+          description: "Cliente inserido com sucesso"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Cliente inserido com sucesso!"
+        '401':
+          description: "Não autorizado"
+        '500':
+          description: "Erro interno no servidor"
+      security:
+        - BearerAuth: []
+
+  # GET CLIENTE BY ID
+  /clientes/{customer_id}:
+    get:
+      tags:
+        - "Clientes"
+      summary: "Buscar cliente por ID"
+      description: "Retorna os dados de um cliente específico pelo ID"
+      parameters:
+        - name: customer_id
+          in: path
+          description: "ID do cliente"
+          required: true
+          schema:
+            type: string
+            example: "12345"
+      responses:
+        '200':
+          description: "Cliente encontrado"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customer_id:
+                    type: integer
+                    example: 12345
+                  gender:
+                    type: string
+                    example: "Male"
+                  senior_citizen:
+                    description: "0 = Não, 1 = Sim"
+                    type: integer
+                    example: 0
+                  partner:
+                    type: integer
+                    description: "0 = Não, 1 = Sim"
+                    example: 1
+                  dependents:
+                    type: integer
+                    description: "0 = Não, 1 = Sim"
+                    example: 0
+                  tenure:
+                    type: integer
+                    example: 12
+                  phone_service:
+                    type: integer
+                    description: "0 = Não, 1 = Sim"
+                    example: 1
+                  multiple_lines:
+                    type: string
+                    example: "No"
+                  internet_service:
+                    type: string
+                    example: "Fiber optic"
+                  online_security:
+                    type: string
+                    example: "Yes"
+                  online_backup:
+                    type: string
+                    example: "No"
+                  device_protection:
+                    type: string
+                    example: "Yes"
+                  tech_support:
+                    type: string
+                    example: "No"
+                  streaming_tv:
+                    type: string
+                    example: "Yes"
+                  streaming_movies:
+                    type: string
+                    example: "No"
+                  contract:
+                    type: string
+                    example: "Month-to-month"
+                  paperless_billing:
+                    type: integer
+                    description: "0 = Não, 1 = Sim"
+                    example: 1
+                  payment_method:
+                    type: string
+                    example: "Credit card"
+                  monthly_charges:
+                    type: number
+                    format: float
+                    example: 70.35
+                  total_charges:
+                    type: number
+                    format: float
+                    example: 845.50
+        '404':
+          description: "Cliente não encontrado"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "Cliente não encontrado"
+        '401':
+          description: "Não autorizado"
+        '500':
+          description: "Erro interno no servidor"
+      security:
+        - BearerAuth: []
+
+  # PREDICT CHURN
+  /predict:
+    post:
+      tags:
+        - "Predição"
+      summary: "Adicionar cliente e prever churn"
+      description: "Insere um novo cliente e realiza a predição de churn imediatamente"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Cliente'
+      responses:
+        '200':
+          description: "Cliente inserido e predição realizada com sucesso"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PredictResponse'
+        '401':
+          description: "Não autorizado"
+        '500':
+          description: "Erro interno no servidor"
+      security:
+        - BearerAuth: []
+
+  # PREDICT CHURN FOR EXISTING CUSTOMER BY ID
+  /predict/{customer_id}:
+    get:
+      tags:
+        - "Predição"
+      summary: "Prever churn para cliente existente"
+      description: "Retorna a predição de churn de um cliente já existente no sistema"
+      parameters:
+        - name: customer_id
+          in: path
+          description: "ID do cliente para realizar a predição"
+          required: true
+          schema:
+            type: integer
+            example: 12345
+      responses:
+        '200':
+          description: "Predição realizada com sucesso"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PredictResponse'
+        '404':
+          description: "Cliente não encontrado ou erro na predição"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+                    example: "Cliente não encontrado"
+        '401':
+          description: "Não autorizado"
+        '500':
+          description: "Erro interno no servidor"
+      security:
+        - BearerAuth: []
+  
+
+components:
+  schemas:
+
+    Cliente:
+      type: object
+      properties:
+        customer_id:
+          type: integer
+          example: 12345
+        gender:
+          type: string
+          example: "Male"
+        senior_citizen:
+          description: "0 = Não, 1 = Sim"
+          type: integer
+          example: 0
+        partner:
+          description: "0 = Não, 1 = Sim"
+          type: integer
+          example: 0
+        dependents:
+          description: "0 = Não, 1 = Sim"
+          type: integer
+          example: 1
+        tenure:
+          type: integer
+          example: 12
+        phone_service:
+          type: integer
+          example: 0
+        multiple_lines:
+          type: string
+          example: "No"
+        internet_service:
+          type: string
+          example: "Fiber optic"
+        online_security:
+          type: string
+          example: "Yes"
+        online_backup:
+          type: string
+          example: "No"
+        device_protection:
+          type: string
+          example: "Yes"
+        tech_support:
+          type: string
+          example: "No"
+        streaming_tv:
+          type: string
+          example: "Yes"
+        streaming_movies:
+          type: string
+          example: "No"
+        contract:
+          type: string
+          example: "Month-to-month"
+        paperless_billing:
+          description: "0 = Não, 1 = Sim"
+          type: integer
+          example: 1
+        payment_method:
+          type: string
+          example: "Credit card"
+        monthly_charges:
+          type: number
+          format: float
+          example: 70.35
+        total_charges:
+          type: number
+          format: float
+          example: 845.50
+
+    PredictResponse:
+      type: object
+      properties:
+        customer_id:
+          type: int
+          example: 1
+        churn_predito:
+          type: boolean
+          example: true
+        probabilidade:
+          type: number
+          format: float
+          example: 0.87
+
+    Token:
+      type: object
+      properties:
+        access_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        refresh_token:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        token_type:
+          type: string
+          example: "bearer"
+      required: ["access_token", "token_type"]
+
+    UserCreate:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "novo_usuario"
+        password:
+          type: string
+          example: "senha_forte123"
+      required: ["username", "password"]
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
