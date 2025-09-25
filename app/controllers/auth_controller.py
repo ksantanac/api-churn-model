@@ -16,7 +16,8 @@ from services.auth_service import (
     ACCESS_TOKEN_EXPIRE_MINUTES
     
 )
-from database import get_db
+
+from db.database import get_db
 from sqlalchemy.orm import Session
 
 # Roteador principal para endpoints de autenticação (tag para documentação Swagger/OpenAPI)
