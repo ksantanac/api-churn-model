@@ -7,8 +7,10 @@ from joblib import load
 
 from sqlalchemy import text
 
-from database import database
+from config.column_mapping import COLUMN_MAPPING_DICT
+from db.database import database
 from models.cliente_model import Cliente
+from models.predict_model import PredictResponse
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "package", "pipeline_churn.joblib")
@@ -40,7 +42,7 @@ async def add_client(cliente: Cliente):
     return customer_id
 
 
-async def get_client_by_id(customer_id: str):
+async def get_client_by_id(customer_id: int):
     query = "SELECT * FROM clientes WHERE customer_id = :customer_id"
     cliente = await database.fetch_one(query, {"customer_id": customer_id})
 
@@ -49,42 +51,21 @@ async def get_client_by_id(customer_id: str):
     
     return cliente
 
-async def add_predict_client(cliente: Cliente):
+async def add_predict_client(cliente: Cliente) -> PredictResponse:
+
     # Inserir cliente no banco
     customer_id = await add_client(cliente)
-    print("Cliente inserido no banco:")
+    print(f"Cliente inserido no banco com ID: {customer_id}")
 
-    # Transformar em dataframe/array para modelo
+    # Converter para DataFrame
     df = pd.DataFrame([cliente.dict()])
+    df.rename(columns=COLUMN_MAPPING_DICT, inplace=True)
 
-    # Renomear colunas para bater com o modelo treinado
-    df.rename(columns={
-        "gender": "gender",
-        "senior_citizen": "SeniorCitizen",
-        "partner": "Partner",
-        "dependents": "Dependents",
-        "tenure": "tenure",
-        "phone_service": "PhoneService",
-        "multiple_lines": "MultipleLines",
-        "internet_service": "InternetService",
-        "online_security": "OnlineSecurity",
-        "online_backup": "OnlineBackup",
-        "device_protection": "DeviceProtection",
-        "tech_support": "TechSupport",
-        "streaming_tv": "StreamingTV",
-        "streaming_movies": "StreamingMovies",
-        "contract": "Contract",
-        "paperless_billing": "PaperlessBilling",
-        "payment_method": "PaymentMethod",
-        "monthly_charges": "MonthlyCharges",
-        "total_charges": "TotalCharges"
-    }, inplace=True)
-
-    # Fazer predição
-    prob = model.predict_proba(df)[0][1]
+    # Predição
+    prob = float(model.predict_proba(df)[0][1])
     churn_predito = bool(prob > 0.5)
 
-    # Salvar resultado na tabela predicoes
+    # Salvar predição no banco
     query = """
         INSERT INTO predicoes (customer_id, churn_predito, probabilidade, data_predicao)
         VALUES (:customer_id, :churn_predito, :probabilidade, :data_predicao)
@@ -92,9 +73,14 @@ async def add_predict_client(cliente: Cliente):
     values = {
         "customer_id": customer_id,
         "churn_predito": churn_predito,
-        "probabilidade": float(prob),
+        "probabilidade": round(prob, 2),
         "data_predicao": datetime.now(),
     }
     await database.execute(query, values)
 
-    return values
+    # Retornar via Pydantic
+    return PredictResponse(
+        customer_id=str(customer_id),
+        churn_predito=churn_predito,
+        probabilidade=round(prob, 2)
+    )
