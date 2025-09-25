@@ -12,7 +12,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from sqlalchemy import text
 
-from database import get_db
+from db.database import get_db
 
 # Carrega variáveis do .env
 load_dotenv()
