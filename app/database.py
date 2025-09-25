@@ -27,3 +27,12 @@ def get_db():
         yield db
     finally:
         db.close()
+
+import os
+from dotenv import load_dotenv
+import databases
+
+load_dotenv()
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+database = databases.Database(DATABASE_URL)

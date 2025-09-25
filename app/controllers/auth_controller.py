@@ -2,8 +2,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from datetime import timedelta
 
-from models.token_models import Token, RefreshTokenRequest
-from models.user_schema import User
+from models.token_model import Token, RefreshTokenRequest
+from models.user_model import User
 from services.auth_service import (
     authenticate_user,
     create_access_token,

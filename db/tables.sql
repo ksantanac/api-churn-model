@@ -1,6 +1,6 @@
 -- Tabela para armazenar informações dos clientes
 CREATE TABLE clientes (
-    customer_id VARCHAR PRIMARY KEY,
+    customer_id SERIAL PRIMARY KEY
     gender VARCHAR(10),
     senior_citizen INT,
     partner BOOLEAN,
@@ -18,15 +18,15 @@ CREATE TABLE clientes (
     contract VARCHAR(20),
     paperless_billing BOOLEAN,
     payment_method VARCHAR(50),
-    monthly_charges NUMERIC,
-    total_charges NUMERIC
+    monthly_charges NUMERIC(10,2),
+    total_charges NUMERIC(10,2)
 );
 
 -- Tabela para armazenar previsões de churn
 CREATE TABLE predicoes (
     id SERIAL PRIMARY KEY,
-    customer_id VARCHAR REFERENCES clientes(customer_id),
+    customer_id INT REFERENCES clientes(customer_id),
     churn_predito BOOLEAN,
-    probabilidade NUMERIC,
+    probabilidade NUMERIC(10,2),
     data_predicao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
