@@ -30,3 +30,10 @@ CREATE TABLE predicoes (
     probabilidade NUMERIC(10,2),
     data_predicao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Tabela para armazenar informações dos usuários (autenticação)
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL
+);

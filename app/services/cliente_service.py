@@ -16,7 +16,7 @@ MODEL_PATH = os.path.join(BASE_DIR, "package", "pipeline_churn.joblib")
 # Carregar modelo já treinado
 model = load(MODEL_PATH)
 
-async def inserir_cliente(cliente: Cliente):
+async def add_client(cliente: Cliente):
     query = """
         INSERT INTO clientes (
             gender, senior_citizen, partner, dependents,
@@ -40,13 +40,13 @@ async def inserir_cliente(cliente: Cliente):
     return customer_id
 
 
-async def buscar_cliente(customer_id: str):
+async def get_client(customer_id: str):
     query = "SELECT * FROM clientes WHERE customer_id = :customer_id"
     return await database.fetch_one(query, {"customer_id": customer_id})
 
-async def prever_cliente(cliente: Cliente):
+async def predict_client(cliente: Cliente):
     # Inserir cliente no banco
-    customer_id = await inserir_cliente(cliente)
+    customer_id = await add_client(cliente)
     print("Cliente inserido no banco:")
 
     # Transformar em dataframe/array para modelo
