@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-class PredicaoResponse(BaseModel):
-    customer_id: str
+class PredictResponse(BaseModel):
+    customer_id: int
     churn_predito: bool
     probabilidade: float
