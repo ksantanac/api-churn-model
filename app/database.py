@@ -1,4 +1,5 @@
 import os
+import databases
 
 from dotenv import load_dotenv
 
@@ -14,6 +15,7 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 
 # Cria a engine de conexão com o banco de dados, engine é o ponto central de conexão com o banco
 engine = create_engine(DATABASE_URL)
+database = databases.Database(DATABASE_URL)
 
 # Cria uma fábrica de sessões
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -27,12 +29,3 @@ def get_db():
         yield db
     finally:
         db.close()
-
-import os
-from dotenv import load_dotenv
-import databases
-
-load_dotenv()
-DATABASE_URL = os.getenv("DATABASE_URL")
-
-database = databases.Database(DATABASE_URL)
