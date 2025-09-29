@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends
 
-from services.auth_service import get_current_user
+from app.services.auth_service import get_current_user
 
-from models.cliente_model import Cliente
-from services.cliente_service import (
+from app.models.cliente_model import Cliente
+from app.services.cliente_service import (
     add_client,
     get_client_by_id,
     add_predict_client

@@ -5,9 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, APIRouter
 from pathlib import Path
 
-from db.events import create_startup_handler, create_shutdown_handler
+from app.db.events import create_startup_handler, create_shutdown_handler
 
-from controllers import (
+from app.controllers import (
     auth_controller, 
     cliente_controller,
     predict_controller

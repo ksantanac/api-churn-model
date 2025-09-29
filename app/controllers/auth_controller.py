@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from datetime import timedelta
 
-from models.token_model import Token, RefreshTokenRequest
-from models.user_model import User
-from services.auth_service import (
+from app.models.token_model import Token, RefreshTokenRequest
+from app.models.user_model import User
+from app.services.auth_service import (
     authenticate_user,
     create_access_token,
     create_refresh_token,
@@ -17,7 +17,7 @@ from services.auth_service import (
     
 )
 
-from db.database import get_db
+from app.db.database import get_db
 from sqlalchemy.orm import Session
 
 # Roteador principal para endpoints de autenticação (tag para documentação Swagger/OpenAPI)

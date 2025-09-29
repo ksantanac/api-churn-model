@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, Depends
 
-from models.predict_model import PredictResponse
+from app.models.predict_model import PredictResponse
 
-from services.auth_service import get_current_user
-from services.predict_service import predict_client_by_id
+from app.services.auth_service import get_current_user
+from app.services.predict_service import predict_client_by_id
 
 router = APIRouter()
 

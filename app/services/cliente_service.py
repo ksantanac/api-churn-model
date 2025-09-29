@@ -7,10 +7,10 @@ from joblib import load
 
 from sqlalchemy import text
 
-from config.column_mapping import COLUMN_MAPPING_DICT
-from db.database import database
-from models.cliente_model import Cliente
-from models.predict_model import PredictResponse
+from app.config.column_mapping import COLUMN_MAPPING_DICT
+from app.db.database import database
+from app.models.cliente_model import Cliente
+from app.models.predict_model import PredictResponse
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "package", "pipeline_churn.joblib")

@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from db.database import database
+from .database import database
 
 def create_startup_handler(app: FastAPI):
     @app.on_event("startup")
