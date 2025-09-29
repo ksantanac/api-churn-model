@@ -46,7 +46,7 @@ app/
 ## ⚙️ Requisitos
 
 - Python **3.11+**
-- MySQL configurado
+- PostgreSQL configurado
 - Dependências:
 ```bash
 pip install -r requirements.txt
@@ -57,7 +57,7 @@ pip install -r requirements.txt
 ## 🔑 Variáveis de Ambiente (`.env`)
 
 ```env
-DATABASE_URL=mysql+pymysql://usuario:senha@localhost:3306/churn_db
+DATABASE_URL=postgresql+psycopg2://usuario:senha@localhost:3306/banco
 
 SECRET_KEY=uma_chave_secreta
 ALGORITHM=HS256

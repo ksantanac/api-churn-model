@@ -27,6 +27,15 @@ app = FastAPI(
     openapi_url="/openapi.json"
 )
 
+# Libera CORS para todas as origens - PROD
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Eventos de ciclo de vida
 create_startup_handler(app)
 create_shutdown_handler(app)
