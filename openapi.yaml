@@ -1,12 +1,25 @@
 openapi: 3.0.3
 info:
-  title: API CHURN MODEL - Autenticação
-  description: Endpoints para gerenciamento de autenticação e usuários
+  title: API CHURN MODEL
+  description: >
+    API para gerenciamento do modelo de **Churn de Clientes**. 
+    Permite criar, consultar e gerenciar usuários e clientes, 
+    além de realizar previsões de churn com base nos dados do cliente. 
+    
+    Esta API oferece endpoints seguros com autenticação JWT, 
+    documentação interativa via Swagger UI e suporte a predições em tempo real.
+
+    Principais funcionalidades:
+      - Autenticação de usuários com geração de tokens JWT (access e refresh)
+      - Registro e deleção de usuários
+      - Cadastro e consulta de clientes
+      - Previsão de churn para novos clientes e clientes existentes
+      - Documentação completa para integração com outros sistemas
   version: 1.0.0
 
-# servers:
-#   - url: https://embrapa-fiap.onrender.com/api/v1
-#     description: Servidor Render
+servers:
+  - url: https://api-churn-model.onrender.com/api/v1
+    description: Servidor Render
 
 
 security:
